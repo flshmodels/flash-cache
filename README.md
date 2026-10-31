@@ -1,8 +1,18 @@
 # Flash Cache
 
-A small HTTP cache for JSON values. Set a key with an expiry time, read it, or remove it.
+Store JSON values under a key with an expiration time. Read them back, replace them or remove them through HTTP requests.
 
 Default address: **http://127.0.0.1:4312**.
+
+## Getting started
+
+Requires Node.js 22 or later. No packages need to be installed.
+
+```sh
+npm start
+```
+
+Keep that terminal open while using the API. In a second terminal, run `npm run demo` to try it or `npm test` to run the tests. Press Ctrl+C in the first terminal to stop the server.
 
 ## Endpoints
 
@@ -26,17 +36,7 @@ This is not a Redis replacement or distributed cache. Do not use it as the only 
 
 Six service tests cover expiration boundaries, TTL resets, isolation, deletion, capacity and byte accounting. Seven transport tests cover the HTTP boundary.
 
-## Run locally
-
-Requires Node.js 22 or later. There are no third-party dependencies or install steps.
-
-```sh
-npm start
-```
-
-In another terminal, run `npm run demo` for an actual HTTP example or `npm test` for the automated checks. Each project runs on its own port. Stop the server with Ctrl+C.
-
-## Access and request format
+## Access and requests
 
 By default, the server listens on `127.0.0.1`. Set `PORT` and `HOST` to change the listener. Setting `API_TOKEN` enables Bearer authentication for all API routes; `GET /health` stays public. A token must be 32â€“256 characters. Non-loopback binding requires a token. For example, in PowerShell:
 
@@ -51,6 +51,10 @@ Requests with bodies must use `Content-Type: application/json`. Keys/IDs are 1â€
 
 Bodies are limited to 64 KiB, 32 nesting levels and 10,000 values. Numbers must be finite. Unsupported methods return 405, bad JSON 400, unsupported content types 415, oversized bodies 413, and missing/incorrect credentials 401. Responses use `Cache-Control: no-store`. Health reports process availability, not downstream readiness. No endpoint executes submitted code or fetches URLs from submitted data.
 
-## Development notes
+## Tests
 
-Tests make real requests to local HTTP servers on temporary ports. GitHub Actions runs them on Node 22 and 24. This is a single-process reference service, not a hosted production offering. Tests cover known cases; they are not a promise that no bugs remain. MIT licensed.
+Tests send HTTP requests to local servers on temporary ports. GitHub Actions runs them on Node 22 and 24.
+
+This repository contains a small service you host yourself. It runs as one process.
+
+MIT licensed. See [LICENSE](LICENSE).
